@@ -56,11 +56,11 @@ while True:
     maxVal = 255
 
     # Treshold the image
-    threshold = cv2.treshold(deltaFrame, tresh, maxVal, cv.THRESH_BINARY)
+    threshold = cv2.threshold(deltaFrame, tresh, maxVal, cv2.THRESH_BINARY)[1]
 
     # Fill in the holes caused by tresholding and then find the shapes/movement in the image, ignoring ones too small
-    treshold = cv2.dilate(treshold, None, iterations=2)
-    movement = cv2.findContours(treshold.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    threshold = cv2.dilate(threshold, None, iterations=2)
+    movement = cv2.findContours(threshold.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     movement = imutils.grab_contours(movement)
     
     for m in movement:
@@ -70,6 +70,7 @@ while True:
         print("MOVEMENT DETECTED!")
 
     cv2.imshow("Feed", frame)
+    key = cv2.waitKey(1) & 0xFF 
 
     if key == ord("q"):
         break
