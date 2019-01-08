@@ -75,4 +75,4 @@ while True:
         break
 
 vs.stop()
-cv.destroyAllWindows()
+cv2.destroyAllWindows()
