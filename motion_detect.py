@@ -68,3 +68,11 @@ while True:
             continue
 
         print("MOVEMENT DETECTED!")
+
+    cv2.imshow("Feed", frame)
+
+    if key == ord("q"):
+        break
+
+vs.stop()
+cv.destroyAllWindows()
