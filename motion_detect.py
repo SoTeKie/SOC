@@ -7,7 +7,7 @@ import imutils
 # We have one required argument, min. size
 if len(sys.argv) != 2 or not sys.argv[1].isdigit():
     print("Incorrect arguments! {}".format(str(sys.argv)))
-    sys.quit()
+    sys.exit()
  
 # Constant for minimal size of changed pixels to be considered as "motion"
 MIN_SIZE = int(sys.argv[1])
