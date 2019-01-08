@@ -31,7 +31,7 @@ while True:
     if frame is None:
         break
 
-    # Varibles required for Gaussian blur
+    # Variables required for Gaussian blur
     # There's no real need to mess with these values
     kernelSize = (21, 21)
     stigmaXY = 0
@@ -45,8 +45,26 @@ while True:
     # If there is no background frame, set it now so we can use it for comparison
     if bgFrame is None:
         bgFrame = smoothFrame
+        continue
 
     # The absolue distance between the background/first frame and new frame will
     # create a new image highlighting only the differences between the two
     deltaFrame = cv2.absdiff(bgFrame, smoothFrame)
-    threshold = cv2.treshold(deltaFrame, cv.THRESH_BINARY)[1]
+
+    # Variables for tresholding
+    tresh = 25
+    maxVal = 255
+
+    # Treshold the image
+    threshold = cv2.treshold(deltaFrame, tresh, maxVal, cv.THRESH_BINARY)
+
+    # Fill in the holes caused by tresholding and then find the shapes/movement in the image, ignoring ones too small
+    treshold = cv2.dilate(treshold, None, iterations=2)
+    movement = cv2.findContours(treshold.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    movement = imutils.grab_contours(movement)
+    
+    for m in movement:
+        if cv2.contourArea(m) < MIN_SIZE:
+            continue
+
+        print("MOVEMENT DETECTED!")
