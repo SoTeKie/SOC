@@ -32,6 +32,8 @@ isMotion = False
 motionCount = 0
 untilCooldown = 0
 
+filename = "image.jpg"
+
 # video loop 
 while True:
     # Read current frame
@@ -83,7 +85,7 @@ while True:
 
         isMotion = True
 
-    #check to see if notification should be sent.    
+    # Check to see if notification should be sent.    
     if isMotion:    
 
         # untilCooldown is when the cooldown ends in epoch time
@@ -92,11 +94,14 @@ while True:
             
             if motionCount >= MIN_FRAMES:
                 print("MOVEMENT!")
+               
+                # Write frame to image
+                cv2.imwrite(filename ,frame)
                 
-                #reset counters
+                # Reset counters
                 motionCount = 0
                 untilCooldown = time.time() + COOLDOWN
-    #no movement
+    # No movement
     else:
         motionCount = 0           
                    
