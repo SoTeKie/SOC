@@ -25,9 +25,8 @@ COOLDOWN = int(sys.argv[3])
 vs = VideoStream(src=0).start()
 time.sleep(5.0)
 
-# Set varible for first frame which will be used as a reference to compare to
-# When starting the stream, there should be no motion in front of the camera
-bgFrame = None
+# Varible for average frame, unitinialized with a value
+avg = None
 
 isMotion = False
 motionCount = 0
@@ -53,14 +52,15 @@ while True:
     smoothFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     smoothFrame = cv2.GaussianBlur(smoothFrame, kernelSize, stigmaXY)
 
-    # If there is no background frame, set it now so we can use it for comparison
-    if bgFrame is None:
-        bgFrame = smoothFrame
+    # Initialize average frame
+    if avg is None:
+        print("Background model...")
+        avg = smoothFrame.copy().astype("float")
         continue
 
-    # The absolue distance between the background/first frame and new frame will
-    # create a new image highlighting only the differences between the two
-    deltaFrame = cv2.absdiff(bgFrame, smoothFrame)
+    # Add frame to average and calculate, after that calculate the absolute difference to find movement
+    cv2.accumulateWeighted(smoothFrame, avg, 0.5)
+    deltaFrame = cv2.absdiff(smoothFrame, cv2.convertScaleAbs(avg))
 
     # Variables for tresholding
     tresh = 25
