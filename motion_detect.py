@@ -69,8 +69,11 @@ while True:
 
         print("MOVEMENT DETECTED!")
 
+    # Disabled for performance of camera
+    cv2.imshow("Feed of delta", deltaFrame)
     cv2.imshow("Feed", frame)
-    key = cv2.waitKey(1) & 0xFF 
+
+    key = cv2.waitKey(1) & 0XFF 
 
     if key == ord("q"):
         break
