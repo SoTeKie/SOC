@@ -5,12 +5,20 @@ import time
 import imutils
 
 # We have one required argument, min. size
-if len(sys.argv) != 2 or not sys.argv[1].isdigit():
-    print("Incorrect arguments! {}".format(str(sys.argv)))
+if len(sys.argv) != 4:
+    print("Incorrect number of arguments! 3 arguments needed! {}".format(str(sys.argv)))
     sys.exit()
- 
+
+for i in range(1,4):
+    if not sys.argv[i].isdigit():
+        print("Incorrect use of arguments! Correct use is [MIN_SIZE] [MIN_FRAMES] [COOLDOWN]")
+
 # Constant for minimal size of changed pixels to be considered as "motion"
 MIN_SIZE = int(sys.argv[1])
+# Minimal amount of frames needed to send notification about movement
+MIN_FRAMES = int(sys.argv[2])
+# Cooldown between movement notifications
+COOLDOWN = int(sys.argv[3])
 
 # Read from webcam and let it start up, sleep time can be adjusted for camera startup time
 # or to make sure there's no motion in front of the camera
@@ -21,6 +29,9 @@ time.sleep(5.0)
 # When starting the stream, there should be no motion in front of the camera
 bgFrame = None
 
+isMotion = False
+motionCount = 0
+untilCooldown = 0
 
 # video loop 
 while True:
@@ -63,11 +74,32 @@ while True:
     movement = cv2.findContours(threshold.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     movement = imutils.grab_contours(movement)
     
+    # Set to false in every loop, only get rewritten to True if there is movement detected in a frame    
+    isMovement = False
+
     for m in movement:
         if cv2.contourArea(m) < MIN_SIZE:
             continue
 
-        print("MOVEMENT DETECTED!")
+        isMotion = True
+
+    #check to see if notification should be sent.    
+    if isMotion:    
+
+        # untilCooldown is when the cooldown ends in epoch time
+        if time.time() > untilCooldown:
+            motionCount += 1
+            
+            if motionCount >= MIN_FRAMES:
+                print("MOVEMENT!")
+                
+                #reset counters
+                motionCount = 0
+                untilCooldown = time.time() + COOLDOWN
+    #no movement
+    else:
+        motionCount = 0           
+                   
 
     # Disabled for performance of camera
     cv2.imshow("Feed of delta", deltaFrame)
