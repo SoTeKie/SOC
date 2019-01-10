@@ -3,6 +3,7 @@ from imutils.video import VideoStream
 import sys
 import time
 import imutils
+import mail_client
 
 # We have one required argument, min. size
 if len(sys.argv) != 4:
@@ -98,6 +99,9 @@ while True:
                 # Write frame to image
                 cv2.imwrite(filename ,frame)
                 
+                # Send email 
+                mail_client.send_mail()
+
                 # Reset counters
                 motionCount = 0
                 untilCooldown = time.time() + COOLDOWN
