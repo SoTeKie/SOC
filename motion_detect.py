@@ -109,15 +109,16 @@ while True:
     else:
         motionCount = 0           
                    
-
+    # IF DISABLED, USE CTRL-C(KeyboardInterrupt)
+    
     # Disabled for performance of camera
-    cv2.imshow("Feed of delta", deltaFrame)
-    cv2.imshow("Feed", frame)
+    #cv2.imshow("Feed of delta", deltaFrame)
+    #cv2.imshow("Feed", frame)
 
-    key = cv2.waitKey(1) & 0XFF 
+    #key = cv2.waitKey(1) & 0XFF 
 
-    if key == ord("q"):
-        break
+    #if key == ord("q"):
+    #    break
 
 vs.stop()
 cv2.destroyAllWindows()
